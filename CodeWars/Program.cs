@@ -11,11 +11,78 @@ namespace CodeWars
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Kata.Add(1)(3));
+            string decode = MorseCodeDecoder.Decode(".... . -.--   .--- ..- -.. .");
+
+            string[] vs = " asass sasas".Split();
+            string a = string.Concat(vs);
+
+            foreach (string i in vs)
+            {
+                Console.WriteLine(i + i.Length);
+            }
+                Console.WriteLine(a + a.Length);
+                Console.WriteLine(decode);
+            
+        }
+    }
+        
+    #region Старые
+
+    class MorseCodeDecoder
+    {
+        public static string Decode(string morseCode)
+        {
+            return string.Concat(string.Concat(morseCode.Split().Select(x => x = x == string.Empty ? " " : MorseCode.Get(x))).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select((x, i) => x += " ")).TrimEnd(' ');
         }
     }
 
-    static class Kata
+    class MorseCode
+    {
+        public static string Get(string morsecode)
+        {
+            switch (morsecode)
+            {
+                case "....":
+                    return "H";
+                case ".":
+                    return "E";
+                case "-.--":
+                    return "Y";
+                case ".---":
+                    return "J";
+                case "..-":
+                    return "U";
+                case "-..":
+                    return "D";
+                default:
+                    return string.Empty;
+            }
+        }
+    }
+
+    [TestFixture]
+    public class MorseCodeDecoderTests
+    {
+        [Test]
+        public void MorseCodeDecoderBasicTest_1()
+        {
+            try
+            {
+                string input = ".... . -.--   .--- ..- -.. .";
+                string expected = "HEY JUDE";
+
+                string actual = MorseCodeDecoder.Decode(input);
+
+                Assert.AreEqual(expected, actual);
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail("There seems to be an error somewhere in your code. Exception message reads as follows: " + ex.Message);
+            }
+        }
+    }
+
+    static class Kata4
     {
         static public int K { get; set; }
 
@@ -28,11 +95,9 @@ namespace CodeWars
         [Test]
         public void SampleTest()
         {
-            Assert.AreEqual(4, Kata.Add(1)(3));
+            Assert.AreEqual(4, Kata4.Add(1)(3));
         }
     }
-    
-    #region Старые
 
     public class TheClockwiseSpiral
     {
