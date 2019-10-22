@@ -11,22 +11,115 @@ namespace CodeWars
     {
         static void Main(string[] args)
         {
-            string decode = MorseCodeDecoder.Decode(".... . -.--   .--- ..- -.. .");
 
-            string[] vs = " asass sasas".Split();
-            string a = string.Concat(vs);
-
-            foreach (string i in vs)
-            {
-                Console.WriteLine(i + i.Length);
-            }
-                Console.WriteLine(a + a.Length);
-                Console.WriteLine(decode);
-            
         }
     }
-        
+    
     #region Старые
+
+    public class SnailSolution
+    {
+        private static int direction;
+        public static int Direction
+        {
+            get => direction;
+            set => direction = value % 4;
+        }
+
+        public static int[] Snail(int[][] array)
+        {
+            if (array[0].Length == 0) return new int[0];
+            int N = array.Length;
+            int[] result = new int[array.Length * array.Length];
+            if (result.Length == 1) { result[0] = array[0][0]; return result; }
+
+            int round = 0;
+            int maxround = N % 2 == 0 ? maxround = N * 2 : maxround = N * 2 - 1;
+            Direction = 0;
+            int i = 0;
+            int j = 0;
+            int r = 0;
+            int max = N - 1;
+
+            while (round < maxround)
+            {
+                for (int cycle = 0; cycle < max && (Direction == 0 || Direction == 2);
+                    j = Direction == 0 ? j + 1 : Direction == 2 ? j - 1 : j, cycle++, r++)
+                    result[r] = array[i][j];
+
+                for (int cycle = 0; cycle < max && (Direction == 1 || Direction == 3);
+                    i = Direction == 1 ? i + 1 : Direction == 3 ? i - 1 : i, cycle++, r++)
+                    result[r] = array[i][j];
+
+                Direction++;
+                round++;
+                if (round % 4 == 0) { max -= 2; i += 1; j += 1; }
+                if (max == 0) max = 1;
+            }
+
+            return result;
+        }
+    }
+
+    public class SnailTest
+    {
+        [Test]
+        public void SnailTest1()
+        {
+            int[][] array =
+            {
+           new []{1, 2, 3},
+           new []{4, 5, 6},
+           new []{7, 8, 9}
+       };
+            var r = new[] { 1, 2, 3, 6, 9, 8, 7, 4, 5 };
+            Test(array, r);
+        }
+
+        public string Int2dToString(int[][] a)
+        {
+            return $"[{string.Join("\n", a.Select(row => $"[{string.Join(",", row)}]"))}]";
+        }
+
+        public void Test(int[][] array, int[] result)
+        {
+            var text = $"{Int2dToString(array)}\nshould be sorted to\n[{string.Join(",", result)}]\n";
+            Console.WriteLine(text);
+            Assert.AreEqual(result, SnailSolution.Snail(array));
+        }
+    }
+
+    public static class Kata5
+    {
+        public static string sumStrings(string a, string b)
+        {
+            List<char> x = a.Reverse().ToList();
+            List<char> y = b.Reverse().ToList();
+            if (x.Count > y.Count) y.AddRange(Enumerable.Repeat((char)48, x.Count - y.Count));
+            else x.AddRange(Enumerable.Repeat((char)48, y.Count - x.Count));
+
+            List<char> result = new List<char>(new char[a.Length > b.Length ? a.Length + 1 : b.Length + 1]); /*Enumerable.Repeat((char)48, a.Length > b.Length ? a.Length + 1 : b.Length + 1).ToList();*/
+
+            for (int i = 0; i < result.Count - 1; i++)
+            {
+                if ((x[i] + y[i] + result[i]) % 48 >= 10) result[i + 1] += (char)49;
+                result[i] = (char)((x[i] + y[i] + result[i]) % 48 % 10 + 48);
+            }
+            result.Reverse();
+            if (result[0] == (char)0) result.RemoveAt(0);
+            return new string(result.ToArray());
+        }
+    }
+
+    [TestFixture]
+    public class CodeWarsTest
+    {
+        [Test]
+        public void Given123And456Returns579()
+        {
+            Assert.AreEqual("579", Kata5.sumStrings("123", "456"));
+        }
+    }
 
     class MorseCodeDecoder
     {
