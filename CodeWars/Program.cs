@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Numerics;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,11 +12,37 @@ namespace CodeWars
     {
         static void Main(string[] args)
         {
-
+            Console.WriteLine(SumFct.perimeter(7));
         }
     }
-    
+
     #region Старые
+
+    public class SumFct
+    {
+        public static BigInteger perimeter(BigInteger n)
+        {
+            BigInteger result = 2, a = 1, b = 1, temp;
+            for (int i = 1; i < n; i++)
+            { temp = a; a += b; b = temp; result += a; }
+            return result * 4;
+        }
+    }
+
+    public class SumFctTests
+    {
+
+        [Test]
+        public void Test1()
+        {
+            Assert.AreEqual(new BigInteger(80), SumFct.perimeter(new BigInteger(5)));
+        }
+        [Test]
+        public void Test2()
+        {
+            Assert.AreEqual(new BigInteger(216), SumFct.perimeter(new BigInteger(7)));
+        }
+    }
 
     public class SnailSolution
     {
