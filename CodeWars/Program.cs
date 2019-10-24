@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -12,7 +13,55 @@ namespace CodeWars
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(SumFct.perimeter(7));
+            //Console.WriteLine(MorseCodeDecoder.DecodeBits("1100110011001100000011000000111111001100111111001111110000000000000011001111110011111100111111000000110011001111110000001111110011001100000011"));
+
+            Console.WriteLine(MorseCodeDecoder.DecodeMorse(MorseCodeDecoder.DecodeBits("01110")));
+
+            Console.ReadLine();
+        }
+    }
+
+    public class MorseCodeDecoder
+    {
+        public static string DecodeBits(string bits)
+        {
+            StringBuilder result = new StringBuilder();
+            string[] morse = Regex.Split(bits, "(0+)");
+
+            for (int i = 0; i < morse.Length; i++)
+            {
+                switch (morse[i])
+                {
+                    case "11":
+                        result.Append('.');
+                        break;
+                    case "111111":
+                        result.Append('-');
+                        break;
+                    case "000000":
+                        result.Append(' ');
+                        break;
+                    case "00000000000000":
+                        result.Append("   ");
+                        break;
+                }
+            }
+
+            return result.ToString();
+        }
+
+        public static string DecodeMorse(string morseCode)
+        {
+            return string.Concat(string.Concat(morseCode.Split().Select(x => x = x == string.Empty ? " " : MorseCode.Get(x))).Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select((x, i) => x += " ")).TrimEnd(' ');
+        }
+    }
+
+    public class MorseCodeDecoderTest
+    {
+        [Test]
+        public void TestExampleFromDescription()
+        {
+            Assert.AreEqual("HEY JUDE", MorseCodeDecoder.DecodeMorse(MorseCodeDecoder.DecodeBits("1100110011001100000011000000111111001100111111001111110000000000000011001111110011111100111111000000110011001111110000001111110011001100000011")));
         }
     }
 
@@ -148,7 +197,7 @@ namespace CodeWars
         }
     }
 
-    class MorseCodeDecoder
+    class MorseCodeDecoder1
     {
         public static string Decode(string morseCode)
         {
@@ -191,7 +240,7 @@ namespace CodeWars
                 string input = ".... . -.--   .--- ..- -.. .";
                 string expected = "HEY JUDE";
 
-                string actual = MorseCodeDecoder.Decode(input);
+                string actual = MorseCodeDecoder1.Decode(input);
 
                 Assert.AreEqual(expected, actual);
             }
